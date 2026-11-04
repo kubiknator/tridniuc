@@ -36,6 +36,23 @@ button:disabled{opacity:.6;cursor:default}
 .res.bad{color:var(--bad)}
 .bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0 16px}
 .bar>div{height:100%;background:var(--ac)}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tabs button{flex:1;padding:10px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.th{padding:0;overflow:hidden;text-align:left}
+.th img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--bd)}
+.th span{display:block;padding:6px 8px;font-size:.85rem}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.92);display:flex;flex-direction:column;
+padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#eee}
+.lbm{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:56px 12px 8px}
+.lbm img{max-width:100%;max-height:100%;object-fit:contain}
+.lbc{text-align:center;padding:8px 16px 14px}
+.lbc a{color:#9cc4ec}
+.lb button{position:absolute;background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:50%;width:44px;height:44px;padding:0;font-size:1.4rem}
+.lbx{top:calc(env(safe-area-inset-top,0px) + 8px);right:10px}
+.lbp,.lbn{top:50%;transform:translateY(-50%)}
+.lbp{left:8px}.lbn{right:8px}
 .err{color:var(--bad);font-size:.85rem}
 </style>
 </head>
@@ -48,12 +65,17 @@ button:disabled{opacity:.6;cursor:default}
 <script>
 const SUBJECTS=[['matematika','Matematika','🔢'],['cestina','Čeština','📖'],['prirodopis','Přírodopis','🌿'],['fyzika','Fyzika','⚡'],['chemie','Chemie','🧪'],['dejepis','Dějepis','🏛️'],['zemepis','Zeměpis','🌍'],['anglictina','Angličtina','🇬🇧']];
 
+// Repozitář s materiály. Nechej prázdné: zjistí se automaticky z adresy *.github.io.
+// Jen když stránka běží jinde (vlastní doména), vyplň např. {owner:'jmeno',repo:'nazev-repa',branch:'main'}
+const GH={owner:'',repo:'',branch:''};
+const IMG=/\.(jpe?g|png|gif|webp|svg|avif)$/i;
+
 // U otevřených odpovědí: true = háčky a čárky se při kontrole ignorují (byt = být)
 const IGNORE_DIACRITICS=false;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let cur=null, data=null, run=null;
+let cur=null, data=null, run=null, tab='tests', topic=null;
 
 // Porovnání otevřených odpovědí: ignoruje velikost písmen, mezery navíc a interpunkci
 function norm(s){
@@ -96,26 +118,113 @@ function home(){
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>openSubject(b.dataset.s));
 }
 
+async function getText(url){
+  try{const r=await fetch(url+'?v='+Date.now());return r.ok?await r.text():null}catch(e){return null}
+}
+
+// Seznam souborů ve složce materialy/ se bere z GitHub API (jedním dotazem), protože web sám složky vypsat neumí.
+let treeCache=null;
+async function getTree(){
+  if(treeCache)return treeCache;
+  try{const c=JSON.parse(sessionStorage.getItem('gh-tree')||'null');if(c&&Date.now()-c.t<300000)return treeCache=c.paths}catch(e){}
+  let o=GH.owner,r=GH.repo;
+  if(!o){
+    const h=location.hostname;
+    if(!h.endsWith('.github.io'))throw new Error('config');
+    o=h.split('.')[0];
+    const seg=location.pathname.split('/')[1];
+    r=(seg&&!seg.includes('.'))?seg:h;
+  }
+  for(const b of (GH.branch?[GH.branch]:['main','master'])){
+    const res=await fetch(`https://api.github.com/repos/${o}/${r}/git/trees/${encodeURIComponent(b)}?recursive=1`);
+    if(res.status===403||res.status===429)throw new Error('limit');
+    if(!res.ok)continue;
+    const j=await res.json();
+    const paths=j.tree.filter(x=>x.type==='blob'&&x.path.startsWith('materialy/')).map(x=>x.path);
+    try{sessionStorage.setItem('gh-tree',JSON.stringify({t:Date.now(),paths}))}catch(e){}
+    return treeCache=paths;
+  }
+  throw new Error('notfound');
+}
+
+const natural=(a,b)=>a.localeCompare(b,'cs',{numeric:true});
+// "01 Zlomky" se zobrazí jako "Zlomky" (číslo slouží jen k seřazení)
+const pretty=n=>n.replace(/^\d+[\s._-]+/,'')||n;
+
+function buildMats(paths,slug){
+  const topics=new Map();
+  for(const p of paths){
+    const parts=p.split('/');            // materialy / predmet / tema / soubor
+    if(parts.length!==4||parts[1]!==slug||!IMG.test(parts[3]))continue;
+    if(!topics.has(parts[2]))topics.set(parts[2],[]);
+    topics.get(parts[2]).push(parts[3]);
+  }
+  return [...topics.keys()].sort(natural).map(t=>({
+    title:pretty(t),
+    items:topics.get(t).sort(natural).map(f=>({src:['materialy',slug,t,f].map(encodeURIComponent).join('/'),cap:''}))
+  }));
+}
+
+async function ensureMats(){
+  if(data.mats)return;
+  $('#view').innerHTML='<p class="mu">Načítám…</p>';
+  try{data.mats=buildMats(await getTree(),cur[0])}
+  catch(e){
+    data.mats=[];
+    data.matsErr=e.message==='limit'?'GitHub dočasně omezil počet dotazů, zkus to za chvíli.'
+      :e.message==='config'?'Nepodařilo se zjistit repozitář. Vyplň GH.owner a GH.repo nahoře ve skriptu.'
+      :'Materiály se nepodařilo načíst.';
+  }
+}
+
 async function openSubject(slug){
   cur=SUBJECTS.find(s=>s[0]===slug);
+  tab='tests';topic=null;
   $('.sub').textContent=cur[1];
   $('#view').innerHTML='<p class="mu">Načítám…</p>';
-  try{
-    const r=await fetch('testy/'+slug+'.txt?v='+Date.now());
-    data=r.ok?parse(await r.text()):{tests:[],errors:[]};
-  }catch(e){data={tests:[],errors:[]}}
+  const tt=await getText('testy/'+slug+'.txt');
+  data=tt?parse(tt):{tests:[],errors:[]};
   list();
+}
+
+function lightbox(items,k){
+  const o=document.createElement('div');o.className='lb';
+  const show=()=>{const it=items[k];
+    o.innerHTML=`<button class="lbx" data-a="x">✕</button><div class="lbm"><img src="${esc(it.src)}" alt="${esc(it.cap)}"></div>`+
+    `<div class="lbc">${it.cap?esc(it.cap)+' ':''}<span class="mu">(${k+1}/${items.length})</span> <a href="${esc(it.src)}" target="_blank" rel="noopener">plná velikost</a></div>`+
+    (items.length>1?'<button class="lbp" data-a="p">‹</button><button class="lbn" data-a="n">›</button>':'')};
+  const close=()=>{o.remove();document.removeEventListener('keydown',key)};
+  const go=d=>{k=(k+d+items.length)%items.length;show()};
+  const key=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowLeft')go(-1);else if(e.key==='ArrowRight')go(1)};
+  o.onclick=e=>{const a=e.target.dataset.a;
+    if(a==='x'||e.target===o||e.target.classList.contains('lbm'))close();
+    else if(a==='p')go(-1);else if(a==='n')go(1)};
+  document.addEventListener('keydown',key);
+  show();document.body.appendChild(o);
 }
 
 function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false,revealed:false}}
 
 function list(){
   run=null;
-  $('#view').innerHTML='<button id="back">← Předměty</button><h2>'+esc(cur[2]+' '+cur[1])+'</h2>'+
-   (data.tests.length?data.tests.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.questions.length} otázek</div></div><button class="pri" data-i="${i}">Spustit</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné testy.</p>')+
-   data.errors.map(e=>'<p class="err">'+esc(e)+'</p>').join('');
-  $('#back').onclick=home;
+  const inTopic=tab==='mats'&&topic!==null;
+  const tabs=`<div class="tabs"><button data-tab="tests" class="${tab==='tests'?'on':''}">Testy</button><button data-tab="mats" class="${tab==='mats'?'on':''}">Materiály</button></div>`;
+  let body;
+  if(tab==='tests'){
+    body=(data.tests.length?data.tests.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.questions.length} otázek</div></div><button class="pri" data-i="${i}">Spustit</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné testy.</p>')+
+      data.errors.map(e=>'<p class="err">'+esc(e)+'</p>').join('');
+  }else if(!inTopic){
+    body=data.mats.length?data.mats.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.items.length} ${t.items.length===1?'obrázek':t.items.length<5?'obrázky':'obrázků'}</div></div><button class="pri" data-t="${i}">Otevřít</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné materiály.</p>'+(data.matsErr?'<p class="err">'+esc(data.matsErr)+'</p>':'');
+  }else{
+    const t=data.mats[topic];
+    body=`<h3>${esc(t.title)}</h3><div class="gal">`+t.items.map((it,k)=>`<button class="th" data-g="${k}"><img src="${esc(it.src)}" alt="${esc(it.cap)}" loading="lazy">${it.cap?'<span>'+esc(it.cap)+'</span>':''}</button>`).join('')+'</div>';
+  }
+  $('#view').innerHTML=`<button id="back">← ${inTopic?'Témata':'Předměty'}</button><h2>${esc(cur[2]+' '+cur[1])}</h2>${tabs}${body}`;
+  $('#back').onclick=()=>{if(inTopic){topic=null;list()}else home()};
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=async()=>{tab=b.dataset.tab;topic=null;if(tab==='mats')await ensureMats();list()});
   document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{run=newRun(data.tests[+b.dataset.i]);quiz()});
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{topic=+b.dataset.t;list()});
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>lightbox(data.mats[topic].items,+b.dataset.g));
 }
 
 function quiz(){
@@ -185,5 +294,6 @@ home();
 </script>
 </body>
 </html>
+
 
 
