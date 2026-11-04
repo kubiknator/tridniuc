@@ -66,12 +66,13 @@ function parse(txt){
   const tests=[],errors=[];let t=null,q=null;
   const closeQ=()=>{if(!q)return;
     const title='Test „'+t.title+'“, otázka „'+q.q+'“: ';
-    if(q.answers.length){
-      if(q.options.length)errors.push(title+'nemůže mít zároveň možnosti (+/-) a přijímané odpovědi (=).');
-      else t.questions.push({q:q.q,open:true,answers:q.answers});
+    if(q.answers.length||q.strict.length){
+      if(q.options.length)errors.push(title+'nemůže mít zároveň možnosti (+/-) a odpovědi (= / ==).');
+      else if(q.answers.length&&q.strict.length)errors.push(title+'nelze míchat „=“ a „==“ v jedné otázce.');
+      else t.questions.push({q:q.q,open:true,auto:q.strict.length>0,answers:q.strict.length?q.strict:q.answers});
     }else{
       const ok=q.options.filter(o=>o.ok).length;
-      if(q.options.length<2||ok!==1)errors.push(title+'potřebuje aspoň 2 odpovědi a právě jednu správnou (+), nebo správné odpovědi zapsané přes „=“.');
+      if(q.options.length<2||ok!==1)errors.push(title+'potřebuje aspoň 2 odpovědi a právě jednu správnou (+), nebo odpovědi zapsané přes „=“ či „==“.');
       else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok)});
     }
     q=null};
@@ -79,8 +80,9 @@ function parse(txt){
     const l=raw.trim();
     if(!l||l.startsWith('//'))continue;
     if(l.startsWith('# ')){closeQ();t={title:l.slice(2).trim(),questions:[]};tests.push(t)}
-    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[],answers:[]}}
+    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[],answers:[],strict:[]}}
     else if((l[0]==='+'||l[0]==='-')&&q)q.options.push({t:l.slice(1).trim(),ok:l[0]==='+'});
+    else if(l.startsWith('==')&&q){const a=l.slice(2).trim();if(a)q.strict.push(a)}
     else if(l[0]==='='&&q){const a=l.slice(1).trim();if(a)q.answers.push(a)}
   }
   closeQ();
@@ -105,7 +107,7 @@ async function openSubject(slug){
   list();
 }
 
-function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false}}
+function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false,revealed:false}}
 
 function list(){
   run=null;
@@ -128,13 +130,18 @@ function quiz(){
   let body;
   if(q.open){
     const cls=done?(run.ok?' ok':' bad'):'';
-    body=`<input class="txt${cls}" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoje odpověď" value="${esc(run.typed)}" ${done?'disabled':''}>`+
-      (done
-        ?(run.ok
-          ?'<p class="res ok">Správně.</p>'
-          :`<p class="res bad">Špatně. Správná odpověď: <strong>${esc(q.answers[0])}</strong>${q.answers.length>1?'<span class="mu"> (přijímáno také: '+q.answers.slice(1).map(esc).join(', ')+')</span>':''}</p>`)
-         +'<button class="pri" id="next">Další</button>'
+    const list=q.answers.map(x=>'<strong>'+esc(x)+'</strong>').join(' <span class="mu">/</span> ');
+    const input=`<input class="txt${cls}" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoje odpověď" value="${esc(run.typed)}" ${(done||run.revealed)?'disabled':''}>`;
+    const answersBox=`<p class="res">Správná odpověď${q.answers.length>1?'i':''}: ${list}</p>`;
+    if(q.auto){
+      body=input+(done
+        ?(run.ok?'<p class="res ok">Správně.</p>':'<p class="res bad">Špatně.</p>'+answersBox)+'<button class="pri" id="next">Další</button>'
         :'<button class="pri" id="check">Zkontrolovat</button>');
+    }else{
+      if(done)body=input+answersBox+(run.ok?'<p class="res ok">Označeno jako správně.</p>':'<p class="res bad">Označeno jako špatně.</p>')+'<button class="pri" id="next">Další</button>';
+      else if(run.revealed)body=input+answersBox+'<p class="mu">Měl jsi to správně?</p><button class="pri" id="right">✓ Správně</button> <button id="wrong">✗ Špatně</button>';
+      else body=input+'<button class="pri" id="reveal">Zobrazit správnou odpověď</button>';
+    }
   }else{
     body=q.options.map((o,k)=>{let c='';if(done){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
       return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${esc(o)}</button>`}).join('')+
@@ -145,25 +152,38 @@ function quiz(){
   $('#back').onclick=list;
 
   if(q.open&&!done){
-    const inp=$('#ans'),check=()=>{
-      const val=inp.value;
-      if(!val.trim())return;
-      run.typed=val;
-      run.ok=q.answers.some(a=>norm(a)===norm(val));
-      run.picked=true;
-      if(run.ok)run.score++;
-      quiz();
-    };
-    $('#check').onclick=check;
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
-    inp.focus();
+    const inp=$('#ans');
+    if(q.auto){
+      const check=()=>{
+        const val=inp.value;
+        if(!val.trim())return;
+        run.typed=val;
+        run.ok=q.answers.some(a=>norm(a)===norm(val));
+        run.picked=true;
+        if(run.ok)run.score++;
+        quiz();
+      };
+      $('#check').onclick=check;
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+      inp.focus();
+    }else if(!run.revealed){
+      const reveal=()=>{run.typed=inp.value;run.revealed=true;quiz()};
+      $('#reveal').onclick=reveal;
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')reveal()});
+      inp.focus();
+    }else{
+      const judge=ok=>{run.ok=ok;run.picked=true;if(ok)run.score++;quiz()};
+      $('#right').onclick=()=>judge(true);
+      $('#wrong').onclick=()=>judge(false);
+    }
   }else if(!q.open){
     v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;run.picked=k;if(k===q.answer)run.score++;quiz()});
   }
-  const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;quiz()};n.focus()}
+  const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;run.revealed=false;quiz()};n.focus()}
 }
 home();
 </script>
 </body>
 </html>
+
 
