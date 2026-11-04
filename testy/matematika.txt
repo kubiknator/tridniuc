@@ -1,0 +1,18 @@
+# Základní matematika
+
+? Kolik je 5 + 7?
++ 12
+- 10
+- 13
+
+? Kolik je 8 × 8?
+- 54
++ 64
+- 72
+
+# Geometrie
+
+? Kolik stupňů má pravý úhel?
++ 90°
+- 45°
+- 180°
