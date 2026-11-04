@@ -9,7 +9,7 @@
 = hlavní město Praha               ← další správná varianta, zobrazí se také
 
 ? Volná otázka, kontroluje stránka
-== 56                              ← uznána jen tato odpověď
-== padesát šest                    ← případně další uznaná varianta
+== 2*x                              ← uznána jen tato odpověď
+== x*2                    ← případně další uznaná varianta
 
 // řádek začínající // je poznámka a ignoruje se
