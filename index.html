@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Testy</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mu:#6b6a64;--ac:#2f5d8a;--ok:#2e7d4f;--bad:#b3392f;--bd:#ddd9cf;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#171716;--card:#222220;--tx:#eceae3;--mu:#9a988f;--ac:#7fb0e0;--ok:#6fc28d;--bad:#e5877e;--bd:#37352f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.6rem;margin:0 0 4px}
+h2{margin:12px 0}
+.sub,.mu{color:var(--mu)}
+.sub{margin:0 0 20px}
+.mu{font-size:.9rem}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:8px 14px}
+button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+button:disabled{opacity:.6;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{padding:22px 10px;text-align:center;border-radius:12px;font-size:1.05rem}
+.tile span{display:block;font-size:1.8rem;margin-bottom:4px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+.bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0 16px}
+.bar>div{height:100%;background:var(--ac)}
+.err{color:var(--bad);font-size:.85rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Testy</h1>
+  <p class="sub">Vyber předmět.</p>
+  <div id="view"></div>
+</main>
+<script>
+const SUBJECTS=[['matematika','Matematika','🔢'],['cestina','Čeština','📖'],['prirodopis','Přírodopis','🌿'],['fyzika','Fyzika','⚡'],['chemie','Chemie','🧪'],['dejepis','Dějepis','🏛️'],['zemepis','Zeměpis','🌍'],['anglictina','Angličtina','🇬🇧']];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let cur=null, data=null, run=null;
+
+function parse(txt){
+  const tests=[],errors=[];let t=null,q=null;
+  const closeQ=()=>{if(!q)return;
+    const ok=q.options.filter(o=>o.ok).length;
+    if(q.options.length<2||ok!==1)errors.push('Test „'+t.title+'“, otázka „'+q.q+'“: potřebuje aspoň 2 odpovědi a právě jednu správnou (+).');
+    else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok)});
+    q=null};
+  for(const raw of txt.split(/\r?\n/)){
+    const l=raw.trim();
+    if(!l||l.startsWith('//'))continue;
+    if(l.startsWith('# ')){closeQ();t={title:l.slice(2).trim(),questions:[]};tests.push(t)}
+    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[]}}
+    else if((l[0]==='+'||l[0]==='-')&&q)q.options.push({t:l.slice(1).trim(),ok:l[0]==='+'});
+  }
+  closeQ();
+  return {tests:tests.filter(x=>x.questions.length),errors};
+}
+
+function home(){
+  cur=data=run=null;
+  $('.sub').textContent='Vyber předmět.';
+  $('#view').innerHTML='<div class="grid">'+SUBJECTS.map(s=>`<button class="tile" data-s="${s[0]}"><span>${s[2]}</span>${s[1]}</button>`).join('')+'</div>';
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>openSubject(b.dataset.s));
+}
+
+async function openSubject(slug){
+  cur=SUBJECTS.find(s=>s[0]===slug);
+  $('.sub').textContent=cur[1];
+  $('#view').innerHTML='<p class="mu">Načítám…</p>';
+  try{
+    const r=await fetch('testy/'+slug+'.txt?v='+Date.now());
+    data=r.ok?parse(await r.text()):{tests:[],errors:[]};
+  }catch(e){data={tests:[],errors:[]}}
+  list();
+}
+
+function list(){
+  run=null;
+  $('#view').innerHTML='<button id="back">← Předměty</button><h2>'+esc(cur[2]+' '+cur[1])+'</h2>'+
+   (data.tests.length?data.tests.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.questions.length} otázek</div></div><button class="pri" data-i="${i}">Spustit</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné testy.</p>')+
+   data.errors.map(e=>'<p class="err">'+esc(e)+'</p>').join('');
+  $('#back').onclick=home;
+  document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{run={t:data.tests[+b.dataset.i],i:0,score:0,picked:null};quiz()});
+}
+
+function quiz(){
+  const v=$('#view'),{t,i}=run;
+  if(i>=t.questions.length){
+    v.innerHTML=`<div class="card"><h2>Hotovo</h2><p>Skóre: <strong>${run.score} / ${t.questions.length}</strong> (${Math.round(run.score/t.questions.length*100)} %)</p><button class="pri" id="again">Znovu</button> <button id="back">Zpět na testy</button></div>`;
+    $('#again').onclick=()=>{run={t,i:0,score:0,picked:null};quiz()};
+    $('#back').onclick=list;return;
+  }
+  const q=t.questions[i];
+  v.innerHTML=`<button id="back">← Testy</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
+  <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}</p><p><strong>${esc(q.q)}</strong></p>
+  ${q.options.map((o,k)=>{let c='';if(run.picked!==null){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
+  return `<button class="opt${c}" data-k="${k}" ${run.picked!==null?'disabled':''}>${esc(o)}</button>`}).join('')}
+  ${run.picked!==null?'<button class="pri" id="next">Další</button>':''}</div>`;
+  $('#back').onclick=list;
+  v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;run.picked=k;if(k===q.answer)run.score++;quiz()});
+  const n=$('#next');if(n)n.onclick=()=>{run.i++;run.picked=null;quiz()};
+}
+home();
+</script>
+</body>
+</html>
