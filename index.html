@@ -27,6 +27,13 @@ button:disabled{opacity:.6;cursor:default}
 .opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px}
 .opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
 .opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+.txt{display:block;width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:6px 0 10px}
+.txt:focus{outline:2px solid var(--ac);outline-offset:0}
+.txt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.txt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+.res{margin:0 0 10px}
+.res.ok{color:var(--ok)}
+.res.bad{color:var(--bad)}
 .bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0 16px}
 .bar>div{height:100%;background:var(--ac)}
 .err{color:var(--bad);font-size:.85rem}
@@ -40,23 +47,41 @@ button:disabled{opacity:.6;cursor:default}
 </main>
 <script>
 const SUBJECTS=[['matematika','Matematika','🔢'],['cestina','Čeština','📖'],['prirodopis','Přírodopis','🌿'],['fyzika','Fyzika','⚡'],['chemie','Chemie','🧪'],['dejepis','Dějepis','🏛️'],['zemepis','Zeměpis','🌍'],['anglictina','Angličtina','🇬🇧']];
+
+// U otevřených odpovědí: true = háčky a čárky se při kontrole ignorují (byt = být)
+const IGNORE_DIACRITICS=false;
+
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let cur=null, data=null, run=null;
 
+// Porovnání otevřených odpovědí: ignoruje velikost písmen, mezery navíc a interpunkci
+function norm(s){
+  s=String(s).toLowerCase();
+  if(IGNORE_DIACRITICS)s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  return s.replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+}
+
 function parse(txt){
   const tests=[],errors=[];let t=null,q=null;
   const closeQ=()=>{if(!q)return;
-    const ok=q.options.filter(o=>o.ok).length;
-    if(q.options.length<2||ok!==1)errors.push('Test „'+t.title+'“, otázka „'+q.q+'“: potřebuje aspoň 2 odpovědi a právě jednu správnou (+).');
-    else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok)});
+    const title='Test „'+t.title+'“, otázka „'+q.q+'“: ';
+    if(q.answers.length){
+      if(q.options.length)errors.push(title+'nemůže mít zároveň možnosti (+/-) a přijímané odpovědi (=).');
+      else t.questions.push({q:q.q,open:true,answers:q.answers});
+    }else{
+      const ok=q.options.filter(o=>o.ok).length;
+      if(q.options.length<2||ok!==1)errors.push(title+'potřebuje aspoň 2 odpovědi a právě jednu správnou (+), nebo správné odpovědi zapsané přes „=“.');
+      else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok)});
+    }
     q=null};
   for(const raw of txt.split(/\r?\n/)){
     const l=raw.trim();
     if(!l||l.startsWith('//'))continue;
     if(l.startsWith('# ')){closeQ();t={title:l.slice(2).trim(),questions:[]};tests.push(t)}
-    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[]}}
+    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[],answers:[]}}
     else if((l[0]==='+'||l[0]==='-')&&q)q.options.push({t:l.slice(1).trim(),ok:l[0]==='+'});
+    else if(l[0]==='='&&q){const a=l.slice(1).trim();if(a)q.answers.push(a)}
   }
   closeQ();
   return {tests:tests.filter(x=>x.questions.length),errors};
@@ -80,33 +105,65 @@ async function openSubject(slug){
   list();
 }
 
+function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false}}
+
 function list(){
   run=null;
   $('#view').innerHTML='<button id="back">← Předměty</button><h2>'+esc(cur[2]+' '+cur[1])+'</h2>'+
    (data.tests.length?data.tests.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.questions.length} otázek</div></div><button class="pri" data-i="${i}">Spustit</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné testy.</p>')+
    data.errors.map(e=>'<p class="err">'+esc(e)+'</p>').join('');
   $('#back').onclick=home;
-  document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{run={t:data.tests[+b.dataset.i],i:0,score:0,picked:null};quiz()});
+  document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{run=newRun(data.tests[+b.dataset.i]);quiz()});
 }
 
 function quiz(){
   const v=$('#view'),{t,i}=run;
   if(i>=t.questions.length){
     v.innerHTML=`<div class="card"><h2>Hotovo</h2><p>Skóre: <strong>${run.score} / ${t.questions.length}</strong> (${Math.round(run.score/t.questions.length*100)} %)</p><button class="pri" id="again">Znovu</button> <button id="back">Zpět na testy</button></div>`;
-    $('#again').onclick=()=>{run={t,i:0,score:0,picked:null};quiz()};
+    $('#again').onclick=()=>{run=newRun(t);quiz()};
     $('#back').onclick=list;return;
   }
   const q=t.questions[i];
+  const done=run.picked!==null;
+  let body;
+  if(q.open){
+    const cls=done?(run.ok?' ok':' bad'):'';
+    body=`<input class="txt${cls}" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoje odpověď" value="${esc(run.typed)}" ${done?'disabled':''}>`+
+      (done
+        ?(run.ok
+          ?'<p class="res ok">Správně.</p>'
+          :`<p class="res bad">Špatně. Správná odpověď: <strong>${esc(q.answers[0])}</strong>${q.answers.length>1?'<span class="mu"> (přijímáno také: '+q.answers.slice(1).map(esc).join(', ')+')</span>':''}</p>`)
+         +'<button class="pri" id="next">Další</button>'
+        :'<button class="pri" id="check">Zkontrolovat</button>');
+  }else{
+    body=q.options.map((o,k)=>{let c='';if(done){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
+      return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${esc(o)}</button>`}).join('')+
+      (done?'<button class="pri" id="next">Další</button>':'');
+  }
   v.innerHTML=`<button id="back">← Testy</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
-  <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}</p><p><strong>${esc(q.q)}</strong></p>
-  ${q.options.map((o,k)=>{let c='';if(run.picked!==null){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
-  return `<button class="opt${c}" data-k="${k}" ${run.picked!==null?'disabled':''}>${esc(o)}</button>`}).join('')}
-  ${run.picked!==null?'<button class="pri" id="next">Další</button>':''}</div>`;
+  <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}${q.open?' · napiš odpověď':''}</p><p><strong>${esc(q.q)}</strong></p>${body}</div>`;
   $('#back').onclick=list;
-  v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;run.picked=k;if(k===q.answer)run.score++;quiz()});
-  const n=$('#next');if(n)n.onclick=()=>{run.i++;run.picked=null;quiz()};
+
+  if(q.open&&!done){
+    const inp=$('#ans'),check=()=>{
+      const val=inp.value;
+      if(!val.trim())return;
+      run.typed=val;
+      run.ok=q.answers.some(a=>norm(a)===norm(val));
+      run.picked=true;
+      if(run.ok)run.score++;
+      quiz();
+    };
+    $('#check').onclick=check;
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+    inp.focus();
+  }else if(!q.open){
+    v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;run.picked=k;if(k===q.answer)run.score++;quiz()});
+  }
+  const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;quiz()};n.focus()}
 }
 home();
 </script>
 </body>
 </html>
+
