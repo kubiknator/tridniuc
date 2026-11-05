@@ -9,6 +9,7 @@
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root{--bg:#171716;--card:#222220;--tx:#eceae3;--mu:#9a988f;--ac:#7fb0e0;--ok:#6fc28d;--bad:#e5877e;--bd:#37352f}}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
 h1{font-size:1.6rem;margin:0 0 4px}
@@ -54,15 +55,56 @@ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#ee
 .lbp,.lbn{top:50%;transform:translateY(-50%)}
 .lbp{left:8px}.lbn{right:8px}
 .err{color:var(--bad);font-size:.85rem}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+#gate .card{width:100%;max-width:360px;margin:0}
+#gate label{display:flex;align-items:center;gap:8px;margin:0 0 12px}
 </style>
 </head>
 <body>
-<main>
+<div id="gate" hidden>
+  <div class="card">
+    <h1>Procvičování</h1>
+    <p class="mu">Zadej heslo pro vstup.</p>
+    <input class="txt" id="pw" type="password" autocomplete="current-password" placeholder="Heslo">
+    <label class="mu"><input type="checkbox" id="rem" checked> Zapamatovat si na tomto zařízení</label>
+    <button class="pri" id="enter">Vstoupit</button>
+    <p class="err" id="gerr"></p>
+  </div>
+</div>
+<main id="app" hidden>
   <h1>Cvičení</h1>
   <p class="sub">Vyber předmět.</p>
   <div id="view"></div>
 </main>
 <script>
+// ===== Vstupní heslo =====
+// Hash hesla vygeneruješ pomocí souboru heslo.html a vložíš sem. Samotné heslo tu nikde není.
+const PASS_HASH='80f8580fa5c5a78d8c437cba6a96f5a2ffbafa9b47ca6c279d2c24b1e91e2516';
+const SALT='testy-v1:';
+async function sha(s){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(SALT+s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function stored(){
+  try{return localStorage.getItem('auth')===PASS_HASH||sessionStorage.getItem('auth')===PASS_HASH}catch(e){return false}
+}
+function unlock(){document.getElementById('gate').hidden=true;document.getElementById('app').hidden=false;home()}
+function initGate(){
+  if(stored())return unlock();
+  const g=document.getElementById('gate'),pw=document.getElementById('pw'),er=document.getElementById('gerr');
+  g.hidden=false;pw.focus();
+  const go=async()=>{
+    if(!window.crypto||!crypto.subtle){er.textContent='Prohlížeč nepodporuje ověření hesla (stránka musí běžet přes https).';return}
+    const h=await sha(pw.value);
+    if(h===PASS_HASH){
+      try{(document.getElementById('rem').checked?localStorage:sessionStorage).setItem('auth',h)}catch(e){}
+      unlock();
+    }else{er.textContent='Nesprávné heslo.';pw.value='';pw.focus()}
+  };
+  document.getElementById('enter').onclick=go;
+  pw.addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+}
+
 const SUBJECTS=[['matematika','Matematika','🔢'],['cestina','Čeština','📖'],['prirodopis','Přírodopis','🌿'],['fyzika','Fyzika','⚡'],['chemie','Chemie','🧪'],['dejepis','Dějepis','🏛️'],['zemepis','Zeměpis','🌍'],['anglictina','Angličtina','🇬🇧']];
 
 // Repozitář s materiály. Nechej prázdné: zjistí se automaticky z adresy *.github.io.
@@ -290,10 +332,7 @@ function quiz(){
   }
   const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;run.revealed=false;quiz()};n.focus()}
 }
-home();
+initGate();
 </script>
 </body>
 </html>
-
-
-
