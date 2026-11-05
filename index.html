@@ -55,6 +55,9 @@ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#ee
 .lbp,.lbn{top:50%;transform:translateY(-50%)}
 .lbp{left:8px}.lbn{right:8px}
 .err{color:var(--bad);font-size:.85rem}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .2em;line-height:1.25;font-size:.95em;font-weight:normal}
+.frac .n{padding:0 .3em;border-bottom:1.5px solid currentColor}
+.frac .d{padding:0 .3em}
 #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 #gate .card{width:100%;max-width:360px;margin:0}
 #gate label{display:flex;align-items:center;gap:8px;margin:0 0 12px}
@@ -77,8 +80,9 @@ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#ee
   <div id="view"></div>
 </main>
 <script>
-
-const PASS_HASH='47e77f9b3067fb2f1de5ba73076d844a5e9e0c03a583137e1616444f2d2bf7a1';
+// ===== Vstupní heslo =====
+// Hash hesla vygeneruješ pomocí souboru heslo.html a vložíš sem. Samotné heslo tu nikde není.
+const PASS_HASH='80f8580fa5c5a78d8c437cba6a96f5a2ffbafa9b47ca6c279d2c24b1e91e2516';
 const SALT='testy-v1:';
 async function sha(s){
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(SALT+s));
@@ -116,11 +120,14 @@ const IGNORE_DIACRITICS=false;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Zlomky: (4(/)2) se zobrazí jako zlomek (čitatel nad jmenovatelem). V čitateli a jmenovateli může být jedna úroveň závorek, např. ((x+1)(/)2)
+const FRAC=/\(((?:[^()]|\([^()]*\))*?)\(\/\)((?:[^()]|\([^()]*\))*?)\)/g;
+const fmt=s=>esc(s).replace(FRAC,'<span class="frac"><span class="n">$1</span><span class="d">$2</span></span>');
 let cur=null, data=null, run=null, tab='tests', topic=null;
 
 // Porovnání otevřených odpovědí: ignoruje velikost písmen, mezery navíc a interpunkci
 function norm(s){
-  s=String(s).toLowerCase();
+  s=String(s).replace(FRAC,'$1/$2').toLowerCase();
   if(IGNORE_DIACRITICS)s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   return s.replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 }
@@ -280,7 +287,7 @@ function quiz(){
   let body;
   if(q.open){
     const cls=done?(run.ok?' ok':' bad'):'';
-    const list=q.answers.map(x=>'<strong>'+esc(x)+'</strong>').join(' <span class="mu">/</span> ');
+    const list=q.answers.map(x=>'<strong>'+fmt(x)+'</strong>').join(' <span class="mu">/</span> ');
     const input=`<input class="txt${cls}" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoje odpověď" value="${esc(run.typed)}" ${(done||run.revealed)?'disabled':''}>`;
     const answersBox=`<p class="res">Správná odpověď${q.answers.length>1?'i':''}: ${list}</p>`;
     if(q.auto){
@@ -294,11 +301,11 @@ function quiz(){
     }
   }else{
     body=q.options.map((o,k)=>{let c='';if(done){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
-      return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${esc(o)}</button>`}).join('')+
+      return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${fmt(o)}</button>`}).join('')+
       (done?'<button class="pri" id="next">Další</button>':'');
   }
   v.innerHTML=`<button id="back">← Cvičení</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
-  <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}${q.open?' · napiš odpověď':''}</p><p><strong>${esc(q.q)}</strong></p>${body}</div>`;
+  <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}${q.open?' · napiš odpověď':''}</p><p><strong>${fmt(q.q)}</strong></p>${body}</div>`;
   $('#back').onclick=list;
 
   if(q.open&&!done){
