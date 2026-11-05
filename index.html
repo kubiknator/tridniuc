@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Testy</title>
+<title>Procvičování</title>
 <style>
 :root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mu:#6b6a64;--ac:#2f5d8a;--ok:#2e7d4f;--bad:#b3392f;--bd:#ddd9cf;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -58,7 +58,7 @@ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#ee
 </head>
 <body>
 <main>
-  <h1>Testy</h1>
+  <h1>Cvičení</h1>
   <p class="sub">Vyber předmět.</p>
   <div id="view"></div>
 </main>
@@ -208,7 +208,7 @@ function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false,revealed:
 function list(){
   run=null;
   const inTopic=tab==='mats'&&topic!==null;
-  const tabs=`<div class="tabs"><button data-tab="tests" class="${tab==='tests'?'on':''}">Testy</button><button data-tab="mats" class="${tab==='mats'?'on':''}">Materiály</button></div>`;
+  const tabs=`<div class="tabs"><button data-tab="tests" class="${tab==='tests'?'on':''}">Cvičení</button><button data-tab="mats" class="${tab==='mats'?'on':''}">Materiály</button></div>`;
   let body;
   if(tab==='tests'){
     body=(data.tests.length?data.tests.map((t,i)=>`<div class="card row"><div><strong>${esc(t.title)}</strong><div class="mu">${t.questions.length} otázek</div></div><button class="pri" data-i="${i}">Spustit</button></div>`).join(''):'<p class="mu">Zatím tu nejsou žádné testy.</p>')+
@@ -256,7 +256,7 @@ function quiz(){
       return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${esc(o)}</button>`}).join('')+
       (done?'<button class="pri" id="next">Další</button>':'');
   }
-  v.innerHTML=`<button id="back">← Testy</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
+  v.innerHTML=`<button id="back">← Cvičení</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
   <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}${q.open?' · napiš odpověď':''}</p><p><strong>${esc(q.q)}</strong></p>${body}</div>`;
   $('#back').onclick=list;
 
