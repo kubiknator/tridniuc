@@ -1,4 +1,205 @@
-# Tělesa
+# Lomené výrazy – 9. ročník
+
+// ===== PODMÍNKY (DEFINIČNÍ OBOR) =====
+
+? Určete podmínku, za které má smysl výraz 5/(x-3).
++ x ≠ 3
+- x ≠ -3
+- x ≠ 0
+- x ≠ 5
+
+? Určete podmínky, za kterých má smysl výraz (x+2)/(x²-4).
++ x ≠ 2 a zároveň x ≠ -2
+- pouze x ≠ 2
+- pouze x ≠ -2
+- x ≠ 4
+
+? Pro jakou hodnotu x nemá smysl výraz 3/(2x+6)?
++ x = -3
+- x = 3
+- x = -6
+- x = 0
+
+? Pro jakou hodnotu x nemá smysl výraz 4/(x-7)? Napište číslo.
+== 7
+== x=7
+== x = 7
+
+? Výraz 1/(x·(x+5)) nemá smysl pro:
++ x = 0 a x = -5
+- pouze x = 0
+- pouze x = -5
+- x = 0 a x = 5
+
+? Výraz (x²+1)/(x²+4) má smysl pro:
++ všechna reálná čísla
+- x ≠ 2
+- x ≠ 2 a x ≠ -2
+- x ≠ 0
+
+// ===== KRÁCENÍ =====
+
+? Zkraťte výraz 6x/(9x) (x ≠ 0).
++ 2/3
+- 2x/3
+- 3/2
+- 6/9
+
+? Zkraťte výraz 4a²/(2a) (a ≠ 0).
++ 2a
+- 2a²
+- 2
+- a/2
+
+? Zkraťte výraz (x²-9)/(x+3) (x ≠ -3).
++ x - 3
+- x + 3
+- x - 9
+- 3
+
+? Zkraťte výraz (2x+4)/(x+2) (x ≠ -2).
++ 2
+- 4
+- 2x
+- x + 2
+
+? Zkraťte výraz (x²-4x)/(x-4) (x ≠ 4). Zapište výsledek.
+== x
+
+? Zkraťte výraz (a²-b²)/(a-b) (a ≠ b). Zapište výsledek.
+== a+b
+== b+a
+
+? Zkraťte výraz (3x-6)/(x²-4) (x ≠ 2, x ≠ -2). Zapište výsledek ve tvaru zlomku.
+== 3/(x+2)
+== 3/(2+x)
+
+// ===== ROZŠIŘOVÁNÍ =====
+
+? Doplňte čitatele: 3/(x-1) = ?/(x²-1)
++ 3(x+1)
+- 3(x-1)
+- 3x
+- x + 1
+
+// ===== SČÍTÁNÍ A ODČÍTÁNÍ =====
+
+? Vypočtěte: 2/x + 3/x
++ 5/x
+- 5/(2x)
+- 6/x
+- 5/x²
+
+? Vypočtěte: (x+1)/5 + (x-1)/5
++ 2x/5
+- 2/5
+- 2x/10
+- x/5
+
+? Vypočtěte: 5/(x-2) - 3/(x-2)
++ 2/(x-2)
+- 8/(x-2)
+- 2
+- 2/(x-2)²
+
+? Vypočtěte: 1/x + 1/y (x ≠ 0, y ≠ 0)
++ (x+y)/(xy)
+- 2/(x+y)
+- 2/(xy)
+- 1/(x+y)
+
+? Vypočtěte: 3/a + 2/a (a ≠ 0). Zapište výsledek.
+== 5/a
+
+? Vypočtěte: 1/x + 1/(2x)
++ 3/(2x)
+- 2/(3x)
+- 1/(3x)
+- 2/(2x²)
+
+? Vypočtěte: (x-1)/x - (x-2)/x (x ≠ 0). Zapište výsledek.
+== 1/x
+
+? Vypočtěte: 2/(x+1) + 1/x
++ (3x+1)/(x(x+1))
+- 3/(x(x+1))
+- (x+3)/(x(x+1))
+- 3/(2x+1)
+
+? Vypočtěte: 3/(x-1) - 2/(x+1)
++ (x+5)/(x²-1)
+- (5x+1)/(x²-1)
+- (x+1)/(x²-1)
+- 1/(x²-1)
+
+? Vypočtěte: a/(a+b) + b/(a+b) (a + b ≠ 0). Zapište výsledek.
+== 1
+
+// ===== NÁSOBENÍ A DĚLENÍ =====
+
+? Vypočtěte: (2/x) · (x/4) (x ≠ 0)
++ 1/2
+- 2
+- 8
+- 1/(2x)
+
+? Vypočtěte: (x/3) · (6/x²) (x ≠ 0). Zapište výsledek.
+== 2/x
+
+? Vypočtěte: (x+1)/(x-1) · (x-1)/(x+2)
++ (x+1)/(x+2)
+- (x-1)/(x+2)
+- 1
+- (x+1)/(x-1)²
+
+? Vypočtěte: (3/x) : (6/x²) (x ≠ 0)
++ x/2
+- 2/x
+- 2x
+- 18/x³
+
+? Vypočtěte: (x²-1)/x · x/(x+1) (x ≠ 0, x ≠ -1). Zapište výsledek.
+== x-1
+== -1+x
+
+? Vypočtěte: 4/(x²-9) · (x+3)/2
++ 2/(x-3)
+- 2/(x+3)
+- 4/(x-3)
+- 2(x+3)/(x-3)
+
+// ===== SLOŽENÉ ZLOMKY =====
+
+? Upravte složený zlomek (2/x) / 4 (x ≠ 0).
++ 1/(2x)
+- 8/x
+- 2x/4
+- 2/x
+
+// ===== ROVNICE S NEZNÁMOU VE JMENOVATELI =====
+
+? Řešte rovnici: 6/x = 2. Zapište kořen.
+== 3
+== x=3
+== x = 3
+
+? Řešte rovnici: x/(x-1) = 2 (x ≠ 1).
++ x = 2
+- x = 1
+- x = -2
+- x = 0
+
+? Řešte rovnici: 3/(x+1) = 1/2 (x ≠ -1). Zapište kořen.
+== 5
+== x=5
+== x = 5
+
+// ===== OTEVŘENÁ OTÁZKA =====
+
+? Vysvětlete, proč je u lomeného výrazu nutné určit podmínky, za kterých má smysl.
+= Protože nelze dělit nulou, jmenovatel nesmí být roven nule.
+= Hodnoty proměnné, pro které by byl jmenovatel nulový, musíme vyloučit, jinak by výraz neměl smysl.
+= Dělení nulou není definováno, proto určíme podmínky, aby jmenovatel nebyl nula.# Tělesa
 
 // ---------- Část A: výběr z možností ----------
 
