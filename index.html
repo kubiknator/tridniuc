@@ -82,7 +82,7 @@ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);color:#ee
 <script>
 // ===== Vstupní heslo =====
 // Hash hesla vygeneruješ pomocí souboru heslo.html a vložíš sem. Samotné heslo tu nikde není.
-const PASS_HASH='80f8580fa5c5a78d8c437cba6a96f5a2ffbafa9b47ca6c279d2c24b1e91e2516';
+const PASS_HASH='47e77f9b3067fb2f1de5ba73076d844a5e9e0c03a583137e1616444f2d2bf7a1';
 const SALT='testy-v1:';
 async function sha(s){
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(SALT+s));
