@@ -35,6 +35,7 @@ button:disabled{opacity:.6;cursor:default}
 .res{margin:0 0 10px}
 .res.ok{color:var(--ok)}
 .res.bad{color:var(--bad)}
+.exp{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:0 0 10px}
 .bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0 16px}
 .bar>div{height:100%;background:var(--ac)}
 button.on{background:var(--ac);border-color:var(--ac);color:#fff}
@@ -139,18 +140,19 @@ function parse(txt){
     if(q.answers.length||q.strict.length){
       if(q.options.length)errors.push(title+'nemůže mít zároveň možnosti (+/-) a odpovědi (= / ==).');
       else if(q.answers.length&&q.strict.length)errors.push(title+'nelze míchat „=“ a „==“ v jedné otázce.');
-      else t.questions.push({q:q.q,open:true,auto:q.strict.length>0,answers:q.strict.length?q.strict:q.answers});
+      else t.questions.push({q:q.q,open:true,auto:q.strict.length>0,answers:q.strict.length?q.strict:q.answers,exp:q.exp});
     }else{
       const ok=q.options.filter(o=>o.ok).length;
       if(q.options.length<2||ok!==1)errors.push(title+'potřebuje aspoň 2 odpovědi a právě jednu správnou (+), nebo odpovědi zapsané přes „=“ či „==“.');
-      else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok)});
+      else t.questions.push({q:q.q,options:q.options.map(o=>o.t),answer:q.options.findIndex(o=>o.ok),exp:q.exp});
     }
     q=null};
   for(const raw of txt.split(/\r?\n/)){
     const l=raw.trim();
     if(!l||l.startsWith('//'))continue;
     if(l.startsWith('# ')){closeQ();t={title:l.slice(2).trim(),questions:[]};tests.push(t)}
-    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[],answers:[],strict:[]}}
+    else if(l.startsWith('? ')){closeQ();if(!t){errors.push('Otázka „'+l.slice(2)+'“ je před názvem testu (# ...).');continue}q={q:l.slice(2).trim(),options:[],answers:[],strict:[],exp:''}}
+    else if(l.startsWith('""')&&q){const e=l.slice(2).trim();if(e)q.exp+=(q.exp?' ':'')+e}
     else if((l[0]==='+'||l[0]==='-')&&q)q.options.push({t:l.slice(1).trim(),ok:l[0]==='+'});
     else if(l.startsWith('==')&&q){const a=l.slice(2).trim();if(a)q.strict.push(a)}
     else if(l[0]==='='&&q){const a=l.slice(1).trim();if(a)q.answers.push(a)}
@@ -251,7 +253,7 @@ function lightbox(items,k){
   show();document.body.appendChild(o);
 }
 
-function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false,revealed:false}}
+function newRun(t){return {t,i:0,score:0,picked:null,typed:'',ok:false,revealed:false,showExp:false}}
 
 function list(){
   run=null;
@@ -284,6 +286,13 @@ function quiz(){
   }
   const q=t.questions[i];
   const done=run.picked!==null;
+  // Vysvětlení: při špatné odpovědi rovnou, při správné až po kliknutí na tlačítko
+  const good=q.open?run.ok:run.picked===q.answer;
+  let expHtml='';
+  if(done&&q.exp){
+    if(!good||run.showExp)expHtml='<div class="exp"><strong>Vysvětlení:</strong> '+fmt(q.exp)+'</div>';
+    else expHtml='<button id="expbtn">Vysvětlení</button> ';
+  }
   let body;
   if(q.open){
     const cls=done?(run.ok?' ok':' bad'):'';
@@ -292,17 +301,17 @@ function quiz(){
     const answersBox=`<p class="res">Správná odpověď${q.answers.length>1?'i':''}: ${list}</p>`;
     if(q.auto){
       body=input+(done
-        ?(run.ok?'<p class="res ok">Správně.</p>':'<p class="res bad">Špatně.</p>'+answersBox)+'<button class="pri" id="next">Další</button>'
+        ?(run.ok?'<p class="res ok">Správně.</p>':'<p class="res bad">Špatně.</p>'+answersBox)+expHtml+'<button class="pri" id="next">Další</button>'
         :'<button class="pri" id="check">Zkontrolovat</button>');
     }else{
-      if(done)body=input+answersBox+(run.ok?'<p class="res ok">Označeno jako správně.</p>':'<p class="res bad">Označeno jako špatně.</p>')+'<button class="pri" id="next">Další</button>';
+      if(done)body=input+answersBox+(run.ok?'<p class="res ok">Označeno jako správně.</p>':'<p class="res bad">Označeno jako špatně.</p>')+expHtml+'<button class="pri" id="next">Další</button>';
       else if(run.revealed)body=input+answersBox+'<p class="mu">Měl jsi to správně?</p><button class="pri" id="right">✓ Správně</button> <button id="wrong">✗ Špatně</button>';
       else body=input+'<button class="pri" id="reveal">Zobrazit správnou odpověď</button>';
     }
   }else{
     body=q.options.map((o,k)=>{let c='';if(done){if(k===q.answer)c=' ok';else if(k===run.picked)c=' bad'}
       return `<button class="opt${c}" data-k="${k}" ${done?'disabled':''}>${fmt(o)}</button>`}).join('')+
-      (done?'<button class="pri" id="next">Další</button>':'');
+      (done?expHtml+'<button class="pri" id="next">Další</button>':'');
   }
   v.innerHTML=`<button id="back">← Cvičení</button><h2>${esc(t.title)}</h2><div class="bar"><div style="width:${i/t.questions.length*100}%"></div></div>
   <div class="card"><p class="mu">Otázka ${i+1} z ${t.questions.length}${q.open?' · napiš odpověď':''}</p><p><strong>${fmt(q.q)}</strong></p>${body}</div>`;
@@ -336,7 +345,8 @@ function quiz(){
   }else if(!q.open){
     v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;run.picked=k;if(k===q.answer)run.score++;quiz()});
   }
-  const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;run.revealed=false;quiz()};n.focus()}
+  const eb=$('#expbtn');if(eb)eb.onclick=()=>{run.showExp=true;quiz()};
+  const n=$('#next');if(n){n.onclick=()=>{run.i++;run.picked=null;run.typed='';run.ok=false;run.revealed=false;run.showExp=false;quiz()};n.focus()}
 }
 initGate();
 </script>
