@@ -7,35 +7,41 @@
 - x ≠ 0
 + x ≠ 3
 - x ≠ 5
+"" Jmenovatel nesmí být nula: x - 3 ≠ 0, tedy x ≠ 3.
 
 ? Určete podmínky, za kterých má smysl výraz: (x + 2(/)x² - 4)
 + x ≠ 2 a zároveň x ≠ -2
 - pouze x ≠ 2
 - pouze x ≠ -2
 - x ≠ 4
+"" Jmenovatel musí být různý od nuly: x² - 4 = (x - 2)(x + 2) ≠ 0. Proto x ≠ 2 a zároveň x ≠ -2.
 
 ? Pro jakou hodnotu x nemá smysl výraz: (3(/)2x + 6)
 - x = 3
 - x = -6
 - x = 0
 + x = -3
+"" Výraz nemá smysl, když je jmenovatel roven nule: 2x + 6 = 0, tedy 2x = -6 a x = -3.
 
 ? Pro jakou hodnotu x nemá smysl výraz (napište číslo): (4(/)x - 7)
 == 7
 == x=7
 == x = 7
+"" Jmenovatel je nula pro x - 7 = 0, tedy x = 7.
 
 ? Výraz (1(/)x · (x + 5)) nemá smysl pro:
 - pouze x = 0
 + x = 0 a x = -5
 - pouze x = -5
 - x = 0 a x = 5
+"" Jmenovatel je součin x · (x + 5). Součin je nula, když je nula některý z činitelů: x = 0 nebo x + 5 = 0, tedy x = -5.
 
 ? Výraz (x² + 1(/)x² + 4) má smysl pro:
 - x ≠ 2
 - x ≠ 2 a x ≠ -2
 - x ≠ 0
 + všechna reálná čísla
+"" Jmenovatel x² + 4 je vždy alespoň 4, protože x² ≥ 0. Nikdy se nerovná nule, takže výraz má smysl pro všechna reálná čísla.
 
 // ===== KRÁCENÍ =====
 
@@ -44,35 +50,42 @@
 - (2x(/)3)
 - (3(/)2)
 - (6(/)9)
+"" Čitatele i jmenovatele vydělíme společným činitelem 3x: (6x(/)9x) = (2(/)3). Zlomek (6(/)9) by ještě nebyl v základním tvaru.
 
 ? Zkraťte výraz (a ≠ 0): (4a²(/)2a)
 - 2a²
 + 2a
 - 2
 - (a(/)2)
+"" Čitatele i jmenovatele vydělíme 2a: 4a² : 2a = 2a a 2a : 2a = 1. Výsledek je 2a.
 
 ? Zkraťte výraz (x ≠ -3): (x² - 9(/)x + 3)
 - x + 3
 - x - 9
 + x - 3
 - 3
+"" Čitatele rozložíme podle vzorce a² - b² = (a - b)(a + b): x² - 9 = (x - 3)(x + 3). Pak zkrátíme činitelem x + 3 a zbyde x - 3.
 
 ? Zkraťte výraz (x ≠ -2): (2x + 4(/)x + 2)
 + 2
 - 4
 - 2x
 - x + 2
+"" V čitateli vytkneme 2: 2x + 4 = 2(x + 2). Zkrátíme činitelem x + 2 a zbyde 2.
 
 ? Zkraťte výraz (x ≠ 4). Zapište výsledek: (x² - 4x(/)x - 4)
 == x
+"" V čitateli vytkneme x: x² - 4x = x(x - 4). Zkrátíme činitelem x - 4 a zbyde x.
 
 ? Zkraťte výraz (a ≠ b). Zapište výsledek: (a² - b²(/)a - b)
 == a+b
 == b+a
+"" Čitatele rozložíme podle vzorce a² - b² = (a - b)(a + b). Zkrátíme činitelem a - b a zbyde a + b.
 
 ? Zkraťte výraz (x ≠ 2, x ≠ -2). Zapište výsledek jako zlomek ve tvaru čitatel/jmenovatel: (3x - 6(/)x² - 4)
 == (3(/)(x+2))
 == (3(/)(2+x))
+"" V čitateli vytkneme 3: 3x - 6 = 3(x - 2). Jmenovatele rozložíme: x² - 4 = (x - 2)(x + 2). Po zkrácení činitelem x - 2 dostaneme (3(/)x + 2).
 
 // ===== ROZŠIŘOVÁNÍ =====
 
@@ -81,6 +94,7 @@
 - 3x
 - x + 1
 + 3(x+1)
+"" Platí x² - 1 = (x - 1)(x + 1), nový jmenovatel je tedy původní jmenovatel krát (x + 1). Stejným výrazem musíme vynásobit i čitatele: 3 · (x + 1).
 
 // ===== SČÍTÁNÍ A ODČÍTÁNÍ =====
 
@@ -89,51 +103,61 @@
 + (5(/)x)
 - (6(/)x)
 - (5(/)x²)
+"" Zlomky mají stejného jmenovatele, takže sečteme jen čitatele a jmenovatele opíšeme: 2 + 3 = 5, výsledek je (5(/)x).
 
 ? Vypočtěte: (x + 1(/)5) + (x - 1(/)5)
 - (2(/)5)
 - (2x(/)10)
 + (2x(/)5)
 - (x(/)5)
+"" Jmenovatel je stejný, sečteme čitatele: (x + 1) + (x - 1) = 2x. Jmenovatel zůstává 5.
 
 ? Vypočtěte: (5(/)x - 2) - (3(/)x - 2)
 + (2(/)x - 2)
 - (8(/)x - 2)
 - 2
 - (2(/)(x-2)²)
+"" Jmenovatel je stejný, odečteme čitatele: 5 - 3 = 2. Jmenovatel x - 2 se opíše beze změny.
 
 ? Vypočtěte (x ≠ 0, y ≠ 0): (1(/)x) + (1(/)y)
 - (2(/)x + y)
 - (2(/)xy)
 - (1(/)x + y)
 + (x + y(/)xy)
+"" Společný jmenovatel je xy. První zlomek rozšíříme y, druhý x: (y(/)xy) + (x(/)xy) = (x + y(/)xy).
 
 ? Vypočtěte (a ≠ 0). Zapište výsledek jako zlomek ve tvaru čitatel/jmenovatel: (3(/)a) + (2(/)a)
 == (5(/)a)
+"" Jmenovatel je stejný, sečteme čitatele: 3 + 2 = 5. Výsledek je (5(/)a).
 
 ? Vypočtěte: (1(/)x) + (1(/)2x)
 - (2(/)3x)
 + (3(/)2x)
 - (1(/)3x)
 - (2(/)2x²)
+"" Společný jmenovatel je 2x. První zlomek rozšíříme dvěma: (2(/)2x) + (1(/)2x) = (3(/)2x).
 
 ? Vypočtěte (x ≠ 0). Zapište výsledek jako zlomek ve tvaru čitatel/jmenovatel: (x - 1(/)x) - (x - 2(/)x)
 == (1(/)x)
+"" Jmenovatel je stejný. Pozor na znaménko: (x - 1) - (x - 2) = x - 1 - x + 2 = 1. Výsledek je (1(/)x).
 
 ? Vypočtěte: (2(/)x + 1) + (1(/)x)
 - (3(/)x(x + 1))
 - (x + 3(/)x(x + 1))
 + (3x + 1(/)x(x + 1))
 - (3(/)2x + 1)
+"" Společný jmenovatel je x(x + 1). První zlomek rozšíříme x, druhý (x + 1): (2x(/)x(x + 1)) + (x + 1(/)x(x + 1)) = (3x + 1(/)x(x + 1)).
 
 ? Vypočtěte: (3(/)x - 1) - (2(/)x + 1)
 - (5x + 1(/)x² - 1)
 - (x + 1(/)x² - 1)
 - (1(/)x² - 1)
 + (x + 5(/)x² - 1)
+"" Společný jmenovatel je (x - 1)(x + 1) = x² - 1. Čitatel: 3(x + 1) - 2(x - 1) = 3x + 3 - 2x + 2 = x + 5.
 
 ? Vypočtěte (a + b ≠ 0). Zapište výsledek: (a(/)a + b) + (b(/)a + b)
 == 1
+"" Jmenovatel je stejný, sečteme čitatele: a + b. Čitatel i jmenovatel jsou pak stejné, takže zlomek se rovná 1.
 
 // ===== NÁSOBENÍ A DĚLENÍ =====
 
@@ -142,39 +166,47 @@
 - 2
 - 8
 - (1(/)2x)
+"" Čitatele vynásobíme čitatelem a jmenovatele jmenovatelem: (2x(/)4x). Zkrátíme 2x a zbyde (1(/)2).
 
 ? Vypočtěte (x ≠ 0). Zapište výsledek jako zlomek ve tvaru čitatel/jmenovatel: (x(/)3) · (6(/)x²)
 == (2(/)x)
+"" Vynásobíme: (6x(/)3x²). Zkrátíme 3x: čitatel 6x : 3x = 2, jmenovatel 3x² : 3x = x. Výsledek je (2(/)x).
 
 ? Vypočtěte: (x + 1(/)x - 1) · (x - 1(/)x + 2)
 - (x - 1(/)x + 2)
 - 1
 + (x + 1(/)x + 2)
 - (x + 1(/)(x-1)²)
+"" Zlomky vynásobíme a zkrátíme činitelem x - 1, který je v čitateli druhého zlomku i ve jmenovateli prvního. Zbyde (x + 1(/)x + 2).
 
 ? Vypočtěte (dělení zlomků, x ≠ 0): (3(/)x) : (6(/)x²)
 - (2(/)x)
 + (x(/)2)
 - 2x
 - (18(/)x³)
+"" Dělení zlomkem je násobení převrácenou hodnotou: (3(/)x) · (x²(/)6) = (3x²(/)6x). Po zkrácení 3x dostaneme (x(/)2).
 
 ? Vypočtěte (x ≠ 0, x ≠ -1). Zapište výsledek: (x² - 1(/)x) · (x(/)x + 1)
 == x-1
 == -1+x
+"" Rozložíme x² - 1 = (x - 1)(x + 1). Pak zkrátíme x i činitelem x + 1 a zbyde x - 1.
 
 ? Vypočtěte: (4(/)x² - 9) · (x + 3(/)2)
 + (2(/)x - 3)
 - (2(/)x + 3)
 - (4(/)x - 3)
 - (2(x + 3)(/)x - 3)
+"" Rozložíme x² - 9 = (x - 3)(x + 3). Zkrátíme činitelem x + 3 a číslem 2 (4 : 2 = 2). Zbyde (2(/)x - 3).
 
 // ===== SLOŽENÉ ZLOMKY =====
+// Zlomek uvnitř zlomku stránka zatím nezobrazí, proto je zapsán jako dělení.
 
-? Upravte složený zlomek (x ≠ 0): ((2(/)x)(/)4)
+? Upravte složený zlomek (x ≠ 0), zapsaný jako dělení: (2(/)x) : 4
 - (8(/)x)
 - (2x(/)4)
 - (2(/)x)
 + (1(/)2x)
+"" Dělení číslem 4 je násobení jeho převrácenou hodnotou (1(/)4): (2(/)x) · (1(/)4) = (2(/)4x). Po zkrácení dvěma dostaneme (1(/)2x).
 
 // ===== ROVNICE S NEZNÁMOU VE JMENOVATELI =====
 
@@ -182,17 +214,20 @@
 == 3
 == x=3
 == x = 3
+"" Rovnici vynásobíme x (x ≠ 0): 6 = 2x, tedy x = 3. Zkouška: (6(/)3) = 2 ✓.
 
 ? Řešte rovnici (x ≠ 1): (x(/)x - 1) = 2
 - x = 1
 + x = 2
 - x = -2
 - x = 0
+"" Vynásobíme (x - 1): x = 2(x - 1), tedy x = 2x - 2 a x = 2. Podmínku x ≠ 1 splňuje. Zkouška: (2(/)1) = 2 ✓.
 
 ? Řešte rovnici (x ≠ -1). Zapište kořen: (3(/)x + 1) = (1(/)2)
 == 5
 == x=5
 == x = 5
+"" Použijeme křížové násobení: 3 · 2 = 1 · (x + 1), tedy 6 = x + 1 a x = 5. Podmínku x ≠ -1 splňuje.
 
 // ===== OTEVŘENÁ OTÁZKA =====
 
@@ -200,3 +235,4 @@
 = Protože nelze dělit nulou, jmenovatel nesmí být roven nule.
 = Hodnoty proměnné, pro které by byl jmenovatel nulový, musíme vyloučit, jinak by výraz neměl smysl.
 = Dělení nulou není definováno, proto určíme podmínky, aby jmenovatel nebyl nula.
+"" Dělení nulou není definováno. Proto zjistíme, kdy je jmenovatel roven nule, a tyto hodnoty proměnné vyloučíme. Např. u (1(/)x - 2) musí platit x ≠ 2.
