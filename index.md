@@ -1,8 +1,8 @@
-# Formát testů
 
-Každý předmět má svůj soubor ve složce `testy` (např. `matematika.txt`). Do souboru píšeš testy v tomto formátu:
 
-```
+
+
+
 # Název testu                      ← začíná nový test
 
 ? Otázka s výběrem                 ← otázka
@@ -11,15 +11,15 @@ Každý předmět má svůj soubor ve složce `testy` (např. `matematika.txt`).
 
 ? Volná otázka, hodnotím se sám    ← pro psané odpovědi, kde jde odpovědět více způsoby,
                                      např. vysvětlení elektromagnetu
-= Praha                            ← správná odpověď (zobrazí se po odpovědi)
-= hlavní město Praha               ← další správná varianta, zobrazí se také
+= Rusko, Velká Británie, USA                           ← správná odpověď (zobrazí se po odpovědi)
+= Německo, Rakousko-Uhersko, Osmanská říše             ← další správná varianta, zobrazí se také
 
 ? Volná otázka, kontroluje stránka
 == 2*x                             ← uznána jen tato odpověď
 == x*2                             ← případně další uznaná varianta
 
 // řádek začínající // je poznámka a ignoruje se
-```
+
 
 ## Zlomky
 
