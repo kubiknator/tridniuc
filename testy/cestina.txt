@@ -1,0 +1,181 @@
+# VH, VV a poměry mezi větami
+
+? Co je věta hlavní (VH)?
++ Věta, která může stát samostatně a není závislá na jiné větě.
+- Věta, která je vždy závislá na jiné větě.
+- Věta, která nemá podmět ani přísudek.
+"" Věta hlavní je mluvnicky nezávislá. Může stát samostatně, aniž by potřebovala další větu.
+
+? Co je věta vedlejší (VV)?
++ Věta, která je závislá na jiné větě a rozvíjí ji.
+- Věta, která může vždy stát samostatně.
+- Věta, která neobsahuje sloveso.
+"" Věta vedlejší je mluvnicky závislá na větě hlavní nebo na jiné větě vedlejší.
+
+? Jak poznáme větu vedlejší?
++ Nemůže samostatně vyjádřit úplnou myšlenku a závisí na jiné větě.
+- Vždy začíná spojkou a nemůže obsahovat sloveso.
+- Je vždy kratší než věta hlavní.
+
+? Jaký druh vedlejší věty je ve větě: Řekl, že přijde později.
++ Vedlejší věta předmětná.
+- Vedlejší věta podmětná.
+- Vedlejší věta příslovečná.
+"" Ptáme se: Co řekl? Že přijde později.
+
+? Jaký druh vedlejší věty je ve větě: Kdo se učí, uspěje.
++ Vedlejší věta podmětná.
+- Vedlejší věta předmětná.
+- Vedlejší věta přívlastková.
+"" Ptáme se: Kdo uspěje? Kdo se učí.
+
+? Jaký druh vedlejší věty je ve větě: Viděl jsem dům, který stojí na kopci.
++ Vedlejší věta přívlastková.
+- Vedlejší věta předmětná.
+- Vedlejší věta podmětná.
+"" Ptáme se: Jaký dům? Který stojí na kopci.
+
+? Jaký druh vedlejší věty je ve větě: Půjdu ven, až přestane pršet.
++ Vedlejší věta příslovečná časová.
+- Vedlejší věta příslovečná místní.
+- Vedlejší věta příslovečná příčinná.
+"" Ptáme se: Kdy půjdu ven? Až přestane pršet.
+
+? Jaký druh vedlejší věty je ve větě: Zůstal doma, protože byl nemocný.
++ Vedlejší věta příslovečná příčinná.
+- Vedlejší věta příslovečná účelová.
+- Vedlejší věta příslovečná podmínková.
+"" Ptáme se: Proč zůstal doma? Protože byl nemocný.
+
+? Jaký druh vedlejší věty je ve větě: Udělal to tak, jak mu poradili.
++ Vedlejší věta příslovečná způsobová.
+- Vedlejší věta příslovečná časová.
+- Vedlejší věta příslovečná přípustková.
+
+? Jaký druh vedlejší věty je ve větě: Přestože pršelo, šli jsme ven.
++ Vedlejší věta příslovečná přípustková.
+- Vedlejší věta příslovečná příčinná.
+- Vedlejší věta příslovečná podmínková.
+
+? Jaký druh vedlejší věty je ve větě: Kdybych měl čas, pomohl bych ti.
++ Vedlejší věta příslovečná podmínková.
+- Vedlejší věta příslovečná účelová.
+- Vedlejší věta příslovečná časová.
+
+? Jaký druh vedlejší věty je ve větě: Šel tam, aby mu pomohl.
++ Vedlejší věta příslovečná účelová.
+- Vedlejší věta příslovečná příčinná.
+- Vedlejší věta příslovečná způsobová.
+
+? Co je souvětí souřadné?
++ Souvětí, ve kterém jsou věty hlavní na sobě mluvnicky nezávislé.
+- Souvětí, ve kterém je pouze jedna věta hlavní a jedna vedlejší.
+- Souvětí, ve kterém jsou všechny věty vedlejší.
+
+? Co je souvětí podřadné?
++ Souvětí, ve kterém je jedna věta hlavní a alespoň jedna věta vedlejší.
+- Souvětí, ve kterém jsou všechny věty hlavní.
+- Souvětí, ve kterém nejsou žádné věty vedlejší.
+
+? Jaký poměr je mezi větami v souvětí: Seděl doma a četl si knihu.
++ Slučovací.
+- Odporovací.
+- Vylučovací.
+- Stupňovací.
+"" Děje probíhají vedle sebe, jsou spojeny spojkou a.
+
+? Jaký poměr je mezi větami: Chtěl jsem přijít, ale neměl jsem čas.
++ Odporovací.
+- Slučovací.
+- Příčinný.
+- Důsledkový.
+"" Druhá věta odporuje očekávání vyvolanému první větou.
+
+? Jaký poměr je mezi větami: Buď se budeš učit, nebo dostaneš špatnou známku.
++ Vylučovací.
+- Slučovací.
+- Stupňovací.
+- Odporovací.
+
+? Jaký poměr je mezi větami: Nejenže se učil, ale dokonce si opakoval i o přestávce.
++ Stupňovací.
+- Slučovací.
+- Odporovací.
+- Vylučovací.
+
+? Jaký poměr je mezi větami: Pršelo, proto jsme zůstali doma.
++ Důsledkový.
+- Příčinný.
+- Odporovací.
+- Slučovací.
+"" Druhá věta vyjadřuje důsledek toho, co se stalo v první větě.
+
+? Jaký poměr je mezi větami: Zůstal doma, neboť byl nemocný.
++ Příčinný.
+- Důsledkový.
+- Vylučovací.
+- Stupňovací.
+"" Druhá věta vysvětluje příčinu děje v první větě.
+
+? Urči, zda je souvětí souřadné, nebo podřadné: Maminka vařila a tatínek uklízel.
++ Souřadné.
+- Podřadné.
+
+? Urči, zda je souvětí souřadné, nebo podřadné: Vím, že se pilně učíš.
++ Podřadné.
+- Souřadné.
+
+? Urči, zda je souvětí souřadné, nebo podřadné: Když zazvonilo, žáci odešli ze třídy.
++ Podřadné.
+- Souřadné.
+
+? Urči, zda je souvětí souřadné, nebo podřadné: Chtěl jsem jít ven, ale začalo pršet.
++ Souřadné.
+- Podřadné.
+
+? Urči druh vedlejší věty: Nevím, kde bydlí.
+= předmětná
+= Vedlejší věta předmětná
+"" Ptáme se: Co nevím? Kde bydlí.
+
+? Urči druh vedlejší věty: Je jasné, že se to podaří.
+= podmětná
+= Vedlejší věta podmětná
+"" Ptáme se: Co je jasné? Že se to podaří.
+
+? Urči druh vedlejší věty: Kniha, kterou čtu, je zajímavá.
+= přívlastková
+= Vedlejší věta přívlastková
+"" Ptáme se: Jaká kniha? Kterou čtu.
+
+? Urči poměr mezi větami: Chtěl jsem ti zavolat, avšak neměl jsem čas.
+= odporovací
+= odporovací poměr
+
+? Urči poměr mezi větami: Buď půjdeme pěšky, nebo pojedeme autobusem.
+= vylučovací
+= vylučovací poměr
+
+? Urči poměr mezi větami: Venku se setmělo, a tak jsme se vrátili domů.
+= důsledkový
+= důsledkový poměr
+
+? Urči, zda jde o souvětí souřadné, nebo podřadné: Petr se učil, protože měl zítra test.
+= podřadné
+= souvětí podřadné
+
+? Urči, zda jde o souvětí souřadné, nebo podřadné: Slunce svítilo a ptáci zpívali.
+= souřadné
+= souvětí souřadné
+
+? Vysvětli vlastními slovy, jak poznáš větu hlavní a větu vedlejší.
+= Věta hlavní může stát samostatně, věta vedlejší je na jiné větě závislá.
+"" VH je mluvnicky nezávislá, zatímco VV je závislá a rozvíjí jinou větu.
+
+? Vysvětli vlastními slovy, jak poznáš rozdíl mezi souvětím souřadným a podřadným.
+= Souřadné má alespoň dvě věty hlavní, podřadné má jednu větu hlavní a alespoň jednu vedlejší.
+"" V souvětí souřadném jsou věty hlavní mluvnicky rovnocenné. V souvětí podřadném je věta vedlejší závislá na jiné větě.
+
+? Vyjmenuj pět poměrů mezi větami hlavními.
+= slučovací, odporovací, vylučovací, stupňovací, příčinný a důsledkový
+"" Pozor, ve školním učivu se obvykle rozlišuje šest poměrů: slučovací, stupňovací, odporovací, vylučovací, příčinný a důsledkový.
