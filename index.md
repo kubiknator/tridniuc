@@ -6,6 +6,7 @@
 # Název testu                      ← začíná nový test
 
 ? Otázka s výběrem                 ← otázka
+- špatná možnost                   ← aspoň jedna -
 + správná možnost                  ← právě jedna +
 - špatná možnost                   ← aspoň jedna -
 "" vysvětlení správné odpovědi (pokud je to potřeba)
@@ -60,4 +61,5 @@ Poznámky:
 - V čitateli a jmenovateli může být jedna úroveň závorek, např. `((x+1)(/)2)`. Zlomek uvnitř zlomku zatím není podporovaný.
 - U otázek kontrolovaných stránkou (`==`) se zapsaný zlomek `(1(/)2)` bere stejně jako `1/2`. Žák tedy může do pole napsat `1/2` i `(1(/)2)` a obojí se uzná. Jiné tvary, např. `0,5`, je potřeba uvést jako další variantu.
 - Běžné závorky jako ve `f(x)` se nemění, jen zápis s `(/)` uprostřed.
-- vysvětlení odpovědi funguje u všech typů úloh 
+- vysvětlení odpovědi funguje u všech typů úloh
+- v uzavřených odpovědí záleží na pořadí + a -, podle toho se udává  pořadí zobrazení možností, takže by se to mělo střídat, aby nebyla např. pořad správně první možnost
